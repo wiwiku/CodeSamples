@@ -74,16 +74,6 @@ int main(int argv, char **args) {
     }
     cloud_in_visual  = cloud_in;
 
-/* yuhan
-    pcl::StatisticalOutlierRemoval<PointT> presor(true);
-    presor.setInputCloud(cloud_in);
-    presor.setMeanK(8);
-    presor.setStddevMulThresh(0.5);
-    presor.filter(*cloud_in_visual);
-
-    cloud_in = cloud_in_visual;
-*/
-
     /** Parse commands */
     bool showNormals = false, showPlanes = false;
     std::string woodarg = "";
@@ -110,125 +100,6 @@ int main(int argv, char **args) {
 
     /** Select clicked points based on command */
     PointT firstClick(0, 0, 0), secondClick(0, 0, 0);
-    if (woodarg == "1") {
-        // wood1 (V not bad after change click, shrunken dims)
-        firstClick.x = 0.9547; firstClick.y = 0.622662; firstClick.z = 0.9887;
-        secondClick.x = 1.0003; secondClick.y = 0.621751; secondClick.z = 1.05196;
-    } else if (woodarg == "2") {
-        // wood2 (V not bad after change click)
-        firstClick.x = 0.950628; firstClick.y = 0.445224; firstClick.z = 0.0538721;
-        secondClick.x = 0.988609; secondClick.y = 0.457071; secondClick.z = 0.102262;
-    } else if (woodarg == "3a") {
-        // wood3 short (V good except shrunken dims)
-        firstClick.x = 0.967892; firstClick.y = 0.534155; firstClick.z = 0.974875;
-        secondClick.x = 0.978867; secondClick.y = 0.526969; secondClick.z = 1.04312;
-    } else if (woodarg == "3b") {
-        // wood3 long (V good)
-        firstClick.x = 1.11743; firstClick.y = -0.0891154; firstClick.z = 1.04574;
-        secondClick.x = 1.14564; secondClick.y = -0.12534; secondClick.z = 0.9848;
-    } else if (woodarg == "4a") {
-        // wood4 front (V not bad after change click)
-        firstClick.x = 0.911129; firstClick.y = -0.0618588; firstClick.z = 1.05675;
-        secondClick.x = 0.992603; secondClick.y = 0.0514742; secondClick.z = 1.02301;
-    } else if (woodarg == "4b") {
-        // wood4 back (V floating balls... not too bad for a cutoff brick)
-        firstClick.x = 1.13723; firstClick.y = 0.0923233; firstClick.z = 1.0982;
-        secondClick.x = 1.19136; secondClick.y = 0.0328361; secondClick.z = 1.1192;
-    } else if (woodarg == "5") {
-        // wood5 (V floating balls... else not too bad)
-        firstClick.x = 0.761861; firstClick.y = 0.0251733; firstClick.z = 0.450738;
-        secondClick.x = 0.801101; secondClick.y = 0.0386602; secondClick.z = 0.530103;
-    } else if (woodarg == "6a") {
-        // wood6 first (ransac error on thick long face about 9deg)
-        firstClick.x = 0.954187; firstClick.y = 0.33911; firstClick.z = 1.01207;
-        secondClick.x = 1.01243; secondClick.y = 0.323617; secondClick.z = 1.07247;
-    } else if (woodarg == "6b") {
-        // wood6 second (offset out of the box... due to ransac error on small face)
-        firstClick.x = 0.735326; firstClick.y = -0.000150979; firstClick.z = 0.991789;
-        secondClick.x = 0.878452; secondClick.y = 0.00546089; secondClick.z = 1.05055;
-    } else if (woodarg == "7a") {
-        // wood7 first (V good)
-        firstClick.x = 0.935892; firstClick.y = 0.243369; firstClick.z = 1.06142;
-        secondClick.x = 1.00011; secondClick.y = 0.376395; secondClick.z = 1.02944;
-    } else if (woodarg == "7b") {
-        // wood7 second (ransac error on long face)
-        firstClick.x = 0.949445; firstClick.y = 0.0588382; firstClick.z = 0.894571;
-        secondClick.x = 1.00033; secondClick.y = -0.0704458; secondClick.z = 0.944553;
-    } else if (woodarg == "8a") {
-        // wood8 top wood (slightly long on top edge)
-        firstClick.x = 0.822994; firstClick.y = 0.0164728; firstClick.z = 0.200193;
-        secondClick.x = 0.8387120; secondClick.y = 0.103996; secondClick.z = 0.229149;
-    } else if (woodarg == "8b") {
-        // wood8 bottom wood (flat cube)
-        firstClick.x = 0.901611; firstClick.y = -0.0989408; firstClick.z = 0.0616762;
-        secondClick.x = 0.903949; secondClick.y = -0.188279; secondClick.z = 0.111148;
-    } else if (woodarg == "9a") {
-        // wood9 upwood (V really good!)
-        firstClick.x = 1.19216; firstClick.y = 0.259848; firstClick.z = 0.280608;
-        secondClick.x = 1.13937; secondClick.y = 0.238201; secondClick.z = 0.223305;
-    } else if (woodarg == "9b") {
-        // wood9 leftwood (V not too bad, changed ec to 4cm)
-        firstClick.x = 0.917183; firstClick.y = 0.319945; firstClick.z = 0.146606;
-        secondClick.x = 0.742775; secondClick.y = 0.314624; secondClick.z = 0.09697;
-    } else if (woodarg == "d1") {
-        // debris first wood (thin face hard to fit)
-        firstClick.x = 0.474817; firstClick.y = -1.24424; firstClick.z = -0.560593;
-        secondClick.x = 0.3045; secondClick.y = -1.2903; secondClick.z = -0.66878;
-    } else if (woodarg == "d2") {
-        // debris second wood (thin face hard to fit)
-        firstClick.x = 0.41927; firstClick.y = -1.38885; firstClick.z = -0.190667;
-        secondClick.x = 0.426837; secondClick.y = -1.30189; secondClick.z = -0.333021;
-    } else if (woodarg == "d3") {
-        // debris third wood
-        firstClick.x = 0.781022; firstClick.y = -1.30285; firstClick.z = -0.480864;
-        secondClick.x = 0.786624;secondClick.y = -1.40224; secondClick.z = -0.48517;
-    } else if (woodarg == "d4") {
-        // debris fourth wood
-        firstClick.x = 0.702531; firstClick.y = -1.59113; firstClick.z = -0.503632;
-        secondClick.x = 0.715156; secondClick.y = -1.48735; secondClick.z = -0.562133;
-    }
-
-    //const PointT firstClick(0.333375,-0.000000,0.044450); // model
-    //const PointT secondClick(0.301625,-0.035875,0.101600);
-    //const PointT firstClick(0.9547, 0.622662, 0.9887); // wood1 (V not bad after change click, shrunken dims)
-    //const PointT secondClick(1.0003, 0.621751, 1.05196);
-    //const PointT firstClick(0.950628, 0.445224, 0.0538721); // wood2 (V not bad after change click)
-    //const PointT secondClick(0.988609, 0.457071, 0.102262);
-    //const PointT firstClick(0.967892, 0.534155, 0.974875); // wood3 short (V good except shrunken dims)
-    //const PointT secondClick(0.978867, 0.526969, 1.04312);
-    //const PointT firstClick(1.11743, -0.0891154, 1.04574); // wood3 long (V good)
-    //const PointT secondClick(1.14564, -0.12534, 0.9848);
-    //const PointT firstClick(0.911129, -0.0618588, 1.05675); // wood4 front (V not bad after change click)
-    //const PointT secondClick(0.992603, 0.0514742, 1.02301);
-    //const PointT firstClick(1.13723, 0.0923233, 1.0982); // wood4 back (V floating balls... not too bad for a cutoff brick)
-    //const PointT secondClick(1.19136, 0.0328361, 1.1192);
-    //const PointT firstClick(0.761861, 0.0251733, 0.450738); // wood5 (V floating balls... else not too bad)
-    //const PointT secondClick(0.801101, 0.0386602, 0.530103);
-    //const PointT firstClick(0.954187, 0.33911, 1.01207); // wood6 first (ransac error on thick long face about 9deg)
-    //const PointT secondClick(1.01243, 0.323617, 1.07247);
-    //const PointT firstClick(0.735326, -0.000150979, 0.991789); // wood6 second (offset out of the box... due to ransac error on small face)
-    //const PointT secondClick(0.878452, 0.00546089, 1.05055);
-    //const PointT firstClick(0.935892, 0.243369, 1.06142); // wood7 first (V good)
-    //const PointT secondClick(1.00011, 0.376395, 1.02944);
-    //const PointT firstClick(0.949445, 0.0588382, 0.894571); // wood7 second (ransac error on long face)
-    //const PointT secondClick(1.00033, -0.0704458, 0.944553);
-    //const PointT firstClick(0.822994, 0.0164728, 0.200193); // wood8 top wood (slightly long on top edge)
-    //const PointT secondClick(0.8387120, 0.103996, 0.229149);
-    //const PointT firstClick(0.901611, -0.0989408, 0.0616762); // wood8 bottom wood (flat cube)
-    //const PointT secondClick(0.903949, -0.188279, 0.111148);
-    //const PointT firstClick(1.19216, 0.259848, 0.280608); // wood9 upwood (V really good!)
-    //const PointT secondClick(1.13937, 0.238201, 0.223305);
-    //const PointT firstClick(0.917183, 0.319945, 0.146606); // wood9 leftwood (V not too bad, changed ec to 4cm)
-    //const PointT secondClick(0.742775, 0.314624, 0.09697);
-
-    //const PointT firstClick(0.474817, -1.24424, -0.560593); // debris first wood (thin face hard to fit)
-    //const PointT secondClick(0.545369, -1.20642, -0.593935);
-    //const PointT firstClick(0.440816, -1.39643, -0.224462); // debris second wood (thin face hard to fit)
-    //const PointT secondClick(0.380055, -1.36555, -0.21727);
-    //const PointT firstClick(0.794728, -1.39358, -0.430554); // debris third wood
-    //const PointT secondClick(0.874922, -1.27762, -0.300042);
-    //const PointT firstClick(0.702531, -1.59113, -0.503632); // debris fourth wood
-    //const PointT secondClick(0.715156, -1.53735, -0.562133);
 
     /** Extract the K nearest point around the clicked point */
     std::vector <float> kDistances;
@@ -426,17 +297,6 @@ int main(int argv, char **args) {
         //std::cout << "After flip: " << coefficients_second[0] << " " << coefficients_second[1] << " " << coefficients_second[2] << " " << coefficients_second[2] << std::endl;
     }
 
-/* old test code
-    pcl::SampleConsensusModelPlane<PointT>::Ptr segPlane2 (new pcl::SampleConsensusModelPlane<PointT>(cloud_in, *kIndicesPtr));
-    pcl::PointIndices::Ptr second_plane(new pcl::PointIndices);
-    PointCloudT::Ptr nearestNeighbourPointsSecond ( new PointCloudT(cloud_in_const,*kIndicesPtr));
-    segPlane2->getSamples(iterationNum,samples);
-    segPlane2->computeModelCoefficients(samples,coefficients_first);
-    std::cout<<coefficients_first<<std::endl;
-    //segPlane:project
-    //.reset();
-*/
-
     /** Get inliers on the second plane */
     pcl::SampleConsensusModelPlane<PointT>::Ptr segPlaneSeg2 (new pcl::SampleConsensusModelPlane<PointT>(cloud_in));
     segPlaneSeg2->setInputCloud(cloud_in);
@@ -543,41 +403,6 @@ int main(int argv, char **args) {
         }
     }
 
-/**     the code below is for concave hull boundary extraction.      */
-    /** THIS IS *NOT* USED IN CURRRENT ALGORITHM */ 
-    /** Project the inliner points on the target plane (increase robustness) */
-/*
-    PointCloudT::Ptr cloud_projected (new PointCloudT);
-    pcl::ProjectInliers<PointT> proj;
-    proj.setModelType(pcl::SACMODEL_PLANE);
-    proj.setInputCloud(firstPlane);
-    proj.setModelCoefficients(plane_visual);
-    proj.filter(*cloud_projected);
-
-*/
-    /** search the convex hull on the first surface. */
-/*  
-    PointCloudT::Ptr cloud_hull (new PointCloudT);
-    pcl::ConcaveHull<PointT> chull;
-    chull.setAlpha(0.01);
-    chull.setInputCloud(cloud_projected);
-    chull.reconstruct(*cloud_hull);
-  
-    std::cout<<"============= cloud_hull =============="<<std::endl;
-
-    std::cout<<cloud_hull->sensor_orientation_.w()<<std::endl;
-    std::cout<<cloud_hull->sensor_orientation_.x()<<std::endl;
-    std::cout<<cloud_hull->sensor_orientation_.y()<<std::endl;
-    std::cout<<cloud_hull->sensor_orientation_.z()<<std::endl;
-
-    std::cout<<"============= cloud_in =============="<<std::endl;
-
-    std::cout<<cloud_in->sensor_orientation_.w()<<std::endl;
-    std::cout<<cloud_in->sensor_orientation_.x()<<std::endl;
-    std::cout<<cloud_in->sensor_orientation_.y()<<std::endl;
-    std::cout<<cloud_in->sensor_orientation_.z()<<std::endl;
-*/   
-
     /** Calculate the intersaction line */
     /** Ref. http://geomalgorithms.com/a05-_intersect-1.html */
     Eigen::Vector3f p1;
@@ -659,25 +484,6 @@ int main(int argv, char **args) {
     PointCloudT::Ptr cloud_projected (new PointCloudT);
     proj_line.filter(*cloud_projected); // Entire input point cloud projected onto this line...
 
-/* yuhan?
-    Eigen::Vector4f min_pt1;
-    Eigen::Vector4f max_pt1;
-    pcl::getMinMax3D(*cloud_projected, min_pt1,max_pt1);
-    float distance1  = sqrt((max_pt1[0]-min_pt1[0])*(max_pt1[0]-min_pt1[0])+
-                (max_pt1[1]-min_pt1[1])*(max_pt1[1]-min_pt1[1])+
-                (max_pt1[2]-min_pt1[2])*(max_pt1[2]-min_pt1[2]));
-
-    proj_line.setInputCloud(secondPlane);
-    proj_line.filter(*cloud_projected);
-    
-    Eigen::Vector4f min_pt2;
-    Eigen::Vector4f max_pt2;
-    pcl::getMinMax3D(*cloud_projected, min_pt2,max_pt2);
-    float distance2  = sqrt((max_pt2[0]-min_pt2[0])*(max_pt2[0]-min_pt2[0])+
-                (max_pt2[1]-min_pt2[1])*(max_pt2[1]-min_pt2[1])+
-                (max_pt2[2]-min_pt2[2])*(max_pt2[2]-min_pt2[2]));
-*/
-
     Eigen::Vector4f min_pt;
     Eigen::Vector4f max_pt;
     float distance;
@@ -687,19 +493,6 @@ int main(int argv, char **args) {
     distance1  = sqrt((max_pt[0]-min_pt[0])*(max_pt[0]-min_pt[0])+
                 (max_pt[1]-min_pt[1])*(max_pt[1]-min_pt[1])+
                 (max_pt[2]-min_pt[2])*(max_pt[2]-min_pt[2]));
-
-/* yuhan?
-    if (distance1>distance2) {
-    distance = distance2;
-    min_pt = min_pt2;
-    max_pt = max_pt2;
-    } 
-    else {
-    distance = distance1;
-    min_pt = min_pt1;
-    max_pt = max_pt1;
-    } 
-*/
 
     PointT line1Mid;
     line1Mid.x = (max_pt[0]+min_pt[0])/2;
